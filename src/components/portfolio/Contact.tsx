@@ -21,15 +21,20 @@ import {
   Facebook,
 } from "lucide-react";
 import emailjs from "@emailjs/browser";
+import PhoneInput from "react-international-phone";
+import "react-international-phone/style.css";
 
 export function Contact() {
   const { t } = useTranslation();
   const formRef = useRef<HTMLFormElement>(null);
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
+    phone: "", // Added phone state
     message: "",
   });
+
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [status, setStatus] = useState<
     "idle" | "sending" | "success" | "error"
@@ -41,6 +46,15 @@ export function Contact() {
     if (!formData.email.trim()) newErrors.email = t.contact.emailRequired;
     else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email))
       newErrors.email = t.contact.emailInvalid;
+
+    // Phone Validation
+    if (!formData.phone.trim()) {
+      newErrors.phone = t.contact.phoneRequired || "Phone number is required";
+    } else if (formData.phone.replace(/\D/g, "").length < 7) {
+      // Checks if the numeric digits are less than 7 (invalid for any country)
+      newErrors.phone = t.contact.phoneInvalid || "Please enter a valid phone number";
+    }
+
     if (!formData.message.trim()) newErrors.message = t.contact.messageRequired;
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -54,18 +68,19 @@ export function Contact() {
 
     try {
       await emailjs.send(
-        "service_wtov8ck",
-        "template_syejxgv",
+        "service_z6fe8p4",
+        "template_14agqol",
         {
           from_name: formData.name,
           from_email: formData.email,
+          phone: formData.phone, // Passed phone to EmailJS
           message: formData.message,
           to_name: developerInfo.name,
         },
         "6ToSd4r0vmxRi_zYC"
       );
       setStatus("success");
-      setFormData({ name: "", email: "", message: "" });
+      setFormData({ name: "", email: "", phone: "", message: "" }); // Reset phone
       setErrors({});
       setTimeout(() => setStatus("idle"), 5000);
     } catch {
@@ -76,7 +91,7 @@ export function Contact() {
 
   return (
     <section id="contact" className="py-8 relative">
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-violet-500/[0.02] to-transparent" />
+      <div className="absolute inset-0 bg-linear-to-b from-transparent via-violet-500/2 to-transparent" />
 
       <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <SectionHeading
@@ -176,10 +191,7 @@ export function Contact() {
             >
               {/* Name Field */}
               <div className="space-y-2">
-                <label
-                  htmlFor="name"
-                  className="text-sm font-medium"
-                >
+                <label htmlFor="name" className="text-sm font-medium">
                   {t.contact.name}
                 </label>
                 <Input
@@ -190,11 +202,10 @@ export function Contact() {
                   onChange={(e) =>
                     setFormData({ ...formData, name: e.target.value })
                   }
-                  className={`rounded-xl ${
-                    errors.name
+                  className={`rounded-xl ${errors.name
                       ? "border-destructive focus-visible:ring-destructive"
                       : ""
-                  }`}
+                    }`}
                 />
                 {errors.name && (
                   <motion.p
@@ -209,10 +220,7 @@ export function Contact() {
 
               {/* Email Field */}
               <div className="space-y-2">
-                <label
-                  htmlFor="email"
-                  className="text-sm font-medium"
-                >
+                <label htmlFor="email" className="text-sm font-medium">
                   {t.contact.email}
                 </label>
                 <Input
@@ -223,11 +231,10 @@ export function Contact() {
                   onChange={(e) =>
                     setFormData({ ...formData, email: e.target.value })
                   }
-                  className={`rounded-xl ${
-                    errors.email
+                  className={`rounded-xl ${errors.email
                       ? "border-destructive focus-visible:ring-destructive"
                       : ""
-                  }`}
+                    }`}
                 />
                 {errors.email && (
                   <motion.p
@@ -240,12 +247,35 @@ export function Contact() {
                 )}
               </div>
 
+              {/* Phone Number Field with Country Code */}
+              <div className="space-y-2">
+                <label htmlFor="phone" className="text-sm font-medium">
+                  {t.contact.phone || "Phone Number"}
+                </label>
+                <PhoneInput
+                  value={formData.phone}
+                  onChange={(phone) => setFormData({ ...formData, phone })}
+                  defaultCountry="us" // Change this to your default country code (e.g., "bd" for Bangladesh, "gb" for UK)
+                  disabled={status === "sending"}
+                  className={`[&_.react-international-phone-input-container]:rounded-xl [&_.react-international-phone-input-container]:border [&_.react-international-phone-input-container]:bg-background/50 [&_.react-international-phone-input-container]:h-10 [&_.react-international-phone-input-container]:transition-colors [&_.react-international-phone-input-container]:focus-within:ring-2 [&_.react-international-phone-input-container]:focus-within:ring-ring [&_.react-international-phone-input-container]:focus-within:ring-offset-0 ${errors.phone
+                      ? "[&_.react-international-phone-input-container]:border-destructive [&_.react-international-phone-input-container]:focus-within:ring-destructive"
+                      : "[&_.react-international-phone-input-container]:border-border/50 hover:[&_.react-international-phone-input-container]:border-border"
+                    } [&_.react-international-phone-flag]:!w-5 [&_.react-international-phone-flag]:!h-[14px] [&_.react-international-phone-country-selector-button]:!p-0 [&_.react-international-phone-country-selector-button]:!pr-1 [&_.react-international-phone-country-selector-button]:!border-r [&_.react-international-phone-country-selector-button]:!border-border/50 [&_.react-international-phone-input]:!border-none [&_.react-international-phone-input]:!ring-none [&_.react-international-phone-input]:!shadow-none [&_.react-international-phone-input]:!text-sm [&_.react-international-phone-input]:!h-full`}
+                />
+                {errors.phone && (
+                  <motion.p
+                    initial={{ opacity: 0, y: -5 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="text-xs text-destructive"
+                  >
+                    {errors.phone}
+                  </motion.p>
+                )}
+              </div>
+
               {/* Message Field */}
               <div className="space-y-2">
-                <label
-                  htmlFor="message"
-                  className="text-sm font-medium"
-                >
+                <label htmlFor="message" className="text-sm font-medium">
                   {t.contact.message}
                 </label>
                 <Textarea
@@ -256,11 +286,10 @@ export function Contact() {
                     setFormData({ ...formData, message: e.target.value })
                   }
                   rows={5}
-                  className={`rounded-xl resize-none ${
-                    errors.message
+                  className={`rounded-xl resize-none ${errors.message
                       ? "border-destructive focus-visible:ring-destructive"
                       : ""
-                  }`}
+                    }`}
                 />
                 {errors.message && (
                   <motion.p
