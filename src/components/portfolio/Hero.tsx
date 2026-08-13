@@ -21,20 +21,20 @@ export function Hero() {
   return (
     <section
       id="home"
-      className="relative min-h-screen flex items-center justify-center overflow-hidden"
+      className="relative lg:min-h-screen flex items-center justify-center overflow-hidden pt-24 pb-8"
     >
       {/* Animated Background */}
       <div className="absolute inset-0">
         <GradientOrb
-          className="w-[500px] h-[500px] -top-20 -left-20"
+          className="w-125 h-125 -top-20 -left-20"
           color="from-violet-500/20 via-purple-500/10 to-transparent"
         />
         <GradientOrb
-          className="w-[400px] h-[400px] top-1/3 -right-20"
+          className="w-100 h-100 top-1/3 -right-20"
           color="from-cyan-500/20 via-teal-500/10 to-transparent"
         />
         <GradientOrb
-          className="w-[300px] h-[300px] bottom-0 left-1/3"
+          className="w-75 h-75 bottom-0 left-1/3"
           color="from-rose-500/10 via-pink-500/5 to-transparent"
         />
         <FloatingParticles />
@@ -59,11 +59,11 @@ export function Hero() {
           className="mb-8"
         >
           <div className="relative inline-block">
-            <div className="w-28 h-28 sm:w-36 sm:h-36 rounded-full overflow-hidden border-4 border-violet-500/30 mx-auto shadow-2xl shadow-violet-500/20">
+            <div className="w-36 h-36 rounded-full overflow-hidden border-4 border-violet-500/30 mx-auto shadow-2xl shadow-violet-500/20">
               <img
                 src={developerInfo.profileImage}
                 alt={developerInfo.name}
-                className="w-full h-full object-cover"
+                className="object-cover"
               />
             </div>
             <motion.div
@@ -95,7 +95,7 @@ export function Hero() {
           className="text-4xl sm:text-5xl md:text-7xl font-bold tracking-tight mb-4"
         >
           <span className="bg-gradient-to-r from-violet-500 via-purple-500 to-cyan-500 bg-clip-text text-transparent">
-            Shohag
+            Shohag Kaisar
           </span>
         </motion.h1>
 
@@ -126,7 +126,7 @@ export function Hero() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.9, duration: 0.6 }}
-          className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12"
+          className="flex items-center justify-center gap-4 mb-12"
         >
           <Button
             size="lg"
@@ -150,7 +150,7 @@ export function Hero() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 1.1, duration: 0.6 }}
-          className="flex items-center justify-center gap-3"
+          className="flex items-center justify-center gap-3 pt-4"
         >
           {[
             {
@@ -188,7 +188,7 @@ export function Hero() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 1.5 }}
-          className="absolute bottom-8 left-1/2 -translate-x-1/2"
+          className="absolute bottom-12 left-1/2 -translate-x-1/2"
         >
           <motion.button
             onClick={() => scrollTo("about")}

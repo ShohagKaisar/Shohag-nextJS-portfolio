@@ -27,7 +27,7 @@ export function About() {
   ];
 
   return (
-    <section id="about" className="py-24 relative">
+    <section id="about" className="py-8 relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <SectionHeading title={t.about.title} />
 
@@ -107,10 +107,12 @@ export function About() {
               </p>
             </AnimatedSection>
 
+          </div>
+        </div>
             {/* Skills Progress Bars */}
             <AnimatedSection direction="up" delay={0.4}>
               <div className="mt-8 space-y-4">
-                <h3 className="text-lg font-semibold mb-4">Skills</h3>
+                <h3 className="text-4xl font-semibold mb-4 text-center">Skills</h3>
                 {skills.map((skill, i) => (
                   <div key={i} className="space-y-2">
                     <div className="flex justify-between text-sm">
@@ -132,8 +134,6 @@ export function About() {
                 ))}
               </div>
             </AnimatedSection>
-          </div>
-        </div>
       </div>
     </section>
   );

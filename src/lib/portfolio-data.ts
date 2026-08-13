@@ -15,26 +15,65 @@ export const developerInfo = {
 
 export const techStack = {
   frontend: [
-    { name: "HTML5", icon: "html" },
+{ name: "HTML5", icon: "html" },
     { name: "CSS3", icon: "css" },
-    { name: "Tailwind CSS", icon: "tailwind" },
     { name: "JavaScript", icon: "javascript" },
+    { name: "TypeScript", icon: "typescript" },
     { name: "React", icon: "react" },
     { name: "Next.js", icon: "nextjs" },
+    { name: "Tailwind CSS", icon: "tailwind" },
+    { name: "Bootstrap", icon: "bootstrap" },
+    { name: "Redux", icon: "redux" },
   ],
   backend: [
     { name: "Node.js", icon: "nodejs" },
     { name: "Express.js", icon: "express" },
+    { name: "REST API", icon: "api" },
+    { name: "GraphQL", icon: "graphql" },
+    { name: "NestJS", icon: "nestjs" },
+    { name: "FastAPI", icon: "fastapi" },
+  ],
+  wordpress: [
+    { name: "WordPress", icon: "wordpress" },
+    { name: "WooCommerce", icon: "woocommerce" },
+    { name: "ACF Pro", icon: "acf" },
+    { name: "Elementor", icon: "elementor" },
+    { name: "Gutenberg", icon: "gutenberg" },
+    { name: "WP REST API", icon: "wpapi" },
+    { name: "Custom Themes", icon: "theme" },
+    { name: "Custom Plugins", icon: "plugin" },
+    { name: "CPT UI", icon: "cptui" },
+    { name: "WP CLI", icon: "wpcli" },
+    { name: "Yoast SEO", icon: "yoast" },
+    { name: "Contact Form 7", icon: "cf7" },
   ],
   database: [
+    { name: "MySQL", icon: "mysql" },
+    { name: "PostgreSQL", icon: "postgresql" },
     { name: "MongoDB", icon: "mongodb" },
     { name: "Firebase", icon: "firebase" },
+    { name: "Supabase", icon: "supabase" },
+    { name: "Prisma", icon: "prisma" },
+    { name: "TypeORM", icon: "typeorm" },
+    { name: "Mongoose", icon: "mongoose" },
+    { name: "Doctrine", icon: "doctrine" },
   ],
   tools: [
-    { name: "Git", icon: "git" },
+  { name: "Git", icon: "git" },
+    { name: "GitHub", icon: "github" },
+    { name: "Docker", icon: "docker" },
     { name: "Webpack", icon: "webpack" },
+    { name: "Vite", icon: "vite" },
     { name: "Figma", icon: "figma" },
-    { name: "DevTools", icon: "devtools" },
+    { name: "VS Code", icon: "vscode" },
+    { name: "Postman", icon: "postman" },
+    { name: "npm", icon: "npm" },
+    { name: "Linux", icon: "linux" },
+    { name: "AWS", icon: "aws" },
+    { name: "Vercel", icon: "vercel" },
+    { name: "Netlify", icon: "netlify" },
+    { name: "Cloudflare", icon: "cloudflare" },
+    { name: "CI/CD", icon: "cicd" },
   ],
   others: [
     { name: "Networking", icon: "networking" },
@@ -85,7 +124,7 @@ export const experiences = [
   {
     title: "Senior System Engineer",
     company: "IT Infrastructure & Engineering",
-    period: "2018 - Present",
+    period: "2014 - 2021",
     description:
       "Leading system engineering operations managing enterprise-level network infrastructure, server environments, and IT security protocols. Overseeing Active Directory management, MikroTik and Cisco network configurations, and ensuring 99.9% uptime across all systems.",
     skills: [
@@ -97,9 +136,9 @@ export const experiences = [
     ],
   },
   {
-    title: "IT Officer",
+    title: "IT Manager",
     company: "IT Operations & Administration",
-    period: "2016 - 2018",
+    period: "2021 - Present",
     description:
       "Managed day-to-day IT operations including network administration, hardware troubleshooting, and system maintenance. Implemented network solutions and provided technical support across the organization.",
     skills: [
@@ -115,7 +154,7 @@ export const education = [
   {
     degree: "Bachelor of Science",
     field: "Computer Science & Engineering",
-    institution: "University of Dhaka",
+    institution: "Sonargaon University",
     period: "2012 - 2016",
     description:
       "Studied core computer science fundamentals including data structures, algorithms, database management, software engineering, and networking.",
@@ -127,7 +166,7 @@ export const skills = [
   { name: "JavaScript", level: 90 },
   { name: "React & Next.js", level: 88 },
   { name: "Node.js & Express", level: 85 },
-  { name: "MongoDB", level: 82 },
+  { name: "Database", level: 82 },
   { name: "Tailwind CSS", level: 92 },
   { name: "WordPress", level: 90 },
   { name: "Networking", level: 87 },

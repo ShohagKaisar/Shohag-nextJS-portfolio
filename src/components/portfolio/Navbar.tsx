@@ -93,8 +93,8 @@ export function Navbar() {
               whileTap={{ scale: 0.95 }}
             >
               <span className="text-xl md:text-2xl font-bold bg-gradient-to-r from-violet-500 to-cyan-500 bg-clip-text text-transparent">
-                {developerInfo.name.split(" ").slice(-1)}
-                <span className="text-foreground">.</span>
+                {/* {developerInfo.name.split(" ").slice(-1)} */}
+                SHOHAG
               </span>
             </motion.a>
 
@@ -185,7 +185,7 @@ export function Navbar() {
               )}
 
               {/* Download Resume */}
-              <a href="/profile.jpg" download className="hidden sm:block">
+              <a href="/profile.jpg" download className="hidden">
                 <Button
                   variant="outline"
                   size="sm"

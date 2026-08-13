@@ -10,7 +10,7 @@ export function Education() {
   const { t } = useTranslation();
 
   return (
-    <section id="education" className="py-24 relative">
+    <section id="education" className="py-8 relative">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <SectionHeading
           title={t.education.title}

@@ -10,7 +10,7 @@ export function Experience() {
   const { t } = useTranslation();
 
   return (
-    <section id="experience" className="py-24 relative">
+    <section id="experience" className="py-8 relative">
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-emerald-500/[0.02] to-transparent" />
 
       <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
