@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, FormEvent, useRef } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTranslation } from "@/context/TranslationContext";
 import { developerInfo } from "@/lib/portfolio-data";
@@ -21,48 +21,90 @@ import {
   Facebook,
 } from "lucide-react";
 import emailjs from "@emailjs/browser";
-import PhoneInput from "react-international-phone";
+import { PhoneInput } from "react-international-phone";
 import "react-international-phone/style.css";
 
 export function Contact() {
   const { t } = useTranslation();
+
   const formRef = useRef<HTMLFormElement>(null);
+  const statusTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const [formData, setFormData] = useState({
     name: "",
     email: "",
-    phone: "", // Added phone state
+    phone: "",
     message: "",
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
+
   const [status, setStatus] = useState<
     "idle" | "sending" | "success" | "error"
   >("idle");
 
-  const validate = () => {
-    const newErrors: Record<string, string> = {};
-    if (!formData.name.trim()) newErrors.name = t.contact.nameRequired;
-    if (!formData.email.trim()) newErrors.email = t.contact.emailRequired;
-    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email))
-      newErrors.email = t.contact.emailInvalid;
+  // Cleanup timeout when component unmounts
+  useEffect(() => {
+    return () => {
+      if (statusTimeoutRef.current) {
+        clearTimeout(statusTimeoutRef.current);
+      }
+    };
+  }, []);
 
-    // Phone Validation
-    if (!formData.phone.trim()) {
-      newErrors.phone = t.contact.phoneRequired || "Phone number is required";
-    } else if (formData.phone.replace(/\D/g, "").length < 7) {
-      // Checks if the numeric digits are less than 7 (invalid for any country)
-      newErrors.phone = t.contact.phoneInvalid || "Please enter a valid phone number";
+  const showTemporaryStatus = (
+    newStatus: "success" | "error",
+    duration = 5000
+  ) => {
+    if (statusTimeoutRef.current) {
+      clearTimeout(statusTimeoutRef.current);
     }
 
-    if (!formData.message.trim()) newErrors.message = t.contact.messageRequired;
+    setStatus(newStatus);
+
+    statusTimeoutRef.current = setTimeout(() => {
+      setStatus("idle");
+      statusTimeoutRef.current = null;
+    }, duration);
+  };
+
+  const validate = () => {
+    const newErrors: Record<string, string> = {};
+
+    if (!formData.name.trim()) {
+      newErrors.name = t.contact.nameRequired;
+    }
+
+    if (!formData.email.trim()) {
+      newErrors.email = t.contact.emailRequired;
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      newErrors.email = t.contact.emailInvalid;
+    }
+
+    // Phone validation
+    if (!formData.phone.trim()) {
+      newErrors.phone =
+        t.contact.phoneRequired || "Phone number is required";
+    } else if (formData.phone.replace(/\D/g, "").length < 7) {
+      newErrors.phone =
+        t.contact.phoneInvalid || "Please enter a valid phone number";
+    }
+
+    if (!formData.message.trim()) {
+      newErrors.message = t.contact.messageRequired;
+    }
+
     setErrors(newErrors);
+
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = async (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!validate()) return;
+
+    if (!validate()) {
+      return;
+    }
 
     setStatus("sending");
 
@@ -73,19 +115,27 @@ export function Contact() {
         {
           from_name: formData.name,
           from_email: formData.email,
-          phone: formData.phone, // Passed phone to EmailJS
+          phone: formData.phone,
           message: formData.message,
           to_name: developerInfo.name,
         },
         "6ToSd4r0vmxRi_zYC"
       );
-      setStatus("success");
-      setFormData({ name: "", email: "", phone: "", message: "" }); // Reset phone
+
+      setFormData({
+        name: "",
+        email: "",
+        phone: "",
+        message: "",
+      });
+
       setErrors({});
-      setTimeout(() => setStatus("idle"), 5000);
-    } catch {
-      setStatus("error");
-      setTimeout(() => setStatus("idle"), 5000);
+
+      showTemporaryStatus("success");
+    } catch (error) {
+      console.error("EmailJS contact form error:", error);
+
+      showTemporaryStatus("error");
     }
   };
 
@@ -107,6 +157,7 @@ export function Contact() {
                 <h3 className="text-xl font-semibold mb-6">
                   Let&apos;s talk about your project
                 </h3>
+
                 <p className="text-muted-foreground text-sm leading-relaxed">
                   Feel free to reach out if you want to collaborate, have a
                   question, or simply want to connect.
@@ -140,6 +191,7 @@ export function Contact() {
                     <div className="w-10 h-10 rounded-lg bg-violet-500/10 flex items-center justify-center text-violet-500 group-hover:bg-violet-500 group-hover:text-white transition-colors">
                       {item.icon}
                     </div>
+
                     <span className="text-sm text-muted-foreground group-hover:text-foreground transition-colors">
                       {item.label}
                     </span>
@@ -150,6 +202,7 @@ export function Contact() {
               {/* Social */}
               <div className="pt-4">
                 <p className="text-sm font-medium mb-3">Find me on</p>
+
                 <div className="flex gap-3">
                   {[
                     {
@@ -183,7 +236,11 @@ export function Contact() {
           </AnimatedSection>
 
           {/* Contact Form */}
-          <AnimatedSection direction="right" delay={0.2} className="lg:col-span-3">
+          <AnimatedSection
+            direction="right"
+            delay={0.2}
+            className="lg:col-span-3"
+          >
             <form
               ref={formRef}
               onSubmit={handleSubmit}
@@ -194,19 +251,25 @@ export function Contact() {
                 <label htmlFor="name" className="text-sm font-medium">
                   {t.contact.name}
                 </label>
+
                 <Input
                   id="name"
                   type="text"
                   placeholder={t.contact.namePlaceholder}
                   value={formData.name}
                   onChange={(e) =>
-                    setFormData({ ...formData, name: e.target.value })
+                    setFormData({
+                      ...formData,
+                      name: e.target.value,
+                    })
                   }
+                  disabled={status === "sending"}
                   className={`rounded-xl ${errors.name
                       ? "border-destructive focus-visible:ring-destructive"
                       : ""
                     }`}
                 />
+
                 {errors.name && (
                   <motion.p
                     initial={{ opacity: 0, y: -5 }}
@@ -223,19 +286,25 @@ export function Contact() {
                 <label htmlFor="email" className="text-sm font-medium">
                   {t.contact.email}
                 </label>
+
                 <Input
                   id="email"
                   type="email"
                   placeholder={t.contact.emailPlaceholder}
                   value={formData.email}
                   onChange={(e) =>
-                    setFormData({ ...formData, email: e.target.value })
+                    setFormData({
+                      ...formData,
+                      email: e.target.value,
+                    })
                   }
+                  disabled={status === "sending"}
                   className={`rounded-xl ${errors.email
                       ? "border-destructive focus-visible:ring-destructive"
                       : ""
                     }`}
                 />
+
                 {errors.email && (
                   <motion.p
                     initial={{ opacity: 0, y: -5 }}
@@ -247,21 +316,28 @@ export function Contact() {
                 )}
               </div>
 
-              {/* Phone Number Field with Country Code */}
+              {/* Phone Number Field */}
               <div className="space-y-2">
                 <label htmlFor="phone" className="text-sm font-medium">
                   {t.contact.phone || "Phone Number"}
                 </label>
+
                 <PhoneInput
                   value={formData.phone}
-                  onChange={(phone) => setFormData({ ...formData, phone })}
-                  defaultCountry="us" // Change this to your default country code (e.g., "bd" for Bangladesh, "gb" for UK)
+                  onChange={(phone) =>
+                    setFormData({
+                      ...formData,
+                      phone,
+                    })
+                  }
+                  defaultCountry="us"
                   disabled={status === "sending"}
                   className={`[&_.react-international-phone-input-container]:rounded-xl [&_.react-international-phone-input-container]:border [&_.react-international-phone-input-container]:bg-background/50 [&_.react-international-phone-input-container]:h-10 [&_.react-international-phone-input-container]:transition-colors [&_.react-international-phone-input-container]:focus-within:ring-2 [&_.react-international-phone-input-container]:focus-within:ring-ring [&_.react-international-phone-input-container]:focus-within:ring-offset-0 ${errors.phone
                       ? "[&_.react-international-phone-input-container]:border-destructive [&_.react-international-phone-input-container]:focus-within:ring-destructive"
                       : "[&_.react-international-phone-input-container]:border-border/50 hover:[&_.react-international-phone-input-container]:border-border"
                     } [&_.react-international-phone-flag]:!w-5 [&_.react-international-phone-flag]:!h-[14px] [&_.react-international-phone-country-selector-button]:!p-0 [&_.react-international-phone-country-selector-button]:!pr-1 [&_.react-international-phone-country-selector-button]:!border-r [&_.react-international-phone-country-selector-button]:!border-border/50 [&_.react-international-phone-input]:!border-none [&_.react-international-phone-input]:!ring-none [&_.react-international-phone-input]:!shadow-none [&_.react-international-phone-input]:!text-sm [&_.react-international-phone-input]:!h-full`}
                 />
+
                 {errors.phone && (
                   <motion.p
                     initial={{ opacity: 0, y: -5 }}
@@ -278,19 +354,25 @@ export function Contact() {
                 <label htmlFor="message" className="text-sm font-medium">
                   {t.contact.message}
                 </label>
+
                 <Textarea
                   id="message"
                   placeholder={t.contact.messagePlaceholder}
                   value={formData.message}
                   onChange={(e) =>
-                    setFormData({ ...formData, message: e.target.value })
+                    setFormData({
+                      ...formData,
+                      message: e.target.value,
+                    })
                   }
+                  disabled={status === "sending"}
                   rows={5}
                   className={`rounded-xl resize-none ${errors.message
                       ? "border-destructive focus-visible:ring-destructive"
                       : ""
                     }`}
                 />
+
                 {errors.message && (
                   <motion.p
                     initial={{ opacity: 0, y: -5 }}
@@ -313,7 +395,10 @@ export function Contact() {
                     className="flex items-center justify-center gap-2 p-4 rounded-xl bg-emerald-500/10 text-emerald-500 border border-emerald-500/20"
                   >
                     <CheckCircle2 className="h-5 w-5" />
-                    <span className="font-medium text-sm">{t.contact.success}</span>
+
+                    <span className="font-medium text-sm">
+                      {t.contact.success}
+                    </span>
                   </motion.div>
                 ) : status === "error" ? (
                   <motion.div
@@ -324,7 +409,10 @@ export function Contact() {
                     className="flex items-center justify-center gap-2 p-4 rounded-xl bg-destructive/10 text-destructive border border-destructive/20"
                   >
                     <AlertCircle className="h-5 w-5" />
-                    <span className="font-medium text-sm">{t.contact.error}</span>
+
+                    <span className="font-medium text-sm">
+                      {t.contact.error}
+                    </span>
                   </motion.div>
                 ) : (
                   <motion.div key="button" layout>
