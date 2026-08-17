@@ -10,7 +10,7 @@ export function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="py-8 border-t border-border/50">
+    <footer className="py-8 border-t border-border/50 md:mx-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0 }}
@@ -27,7 +27,7 @@ export function Footer() {
             <span>{t.footer.designedBy}</span>
             <Heart className="h-3.5 w-3.5 text-red-500 fill-red-500" />
             <span className="font-semibold bg-gradient-to-r from-violet-500 to-cyan-500 bg-clip-text text-transparent">
-              {developerInfo.name.split(" ").slice(-1)}
+              SHOHAG
             </span>
           </div>
         </motion.div>
