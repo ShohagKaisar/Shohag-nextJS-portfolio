@@ -6,6 +6,83 @@ import { projects } from "@/lib/portfolio-data";
 import { AnimatedSection, SectionHeading } from "./AnimatedComponents";
 import { ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import Image from "next/image";
+import { useEffect, useRef, useState } from "react";
+
+function WebsitePreview({
+  src,
+  alt,
+}: {
+  src: string;
+  alt: string;
+}) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const imageRef = useRef<HTMLImageElement>(null);
+
+  const [scrollDistance, setScrollDistance] = useState(0);
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  useEffect(() => {
+    const calculateScroll = () => {
+      if (!containerRef.current || !imageRef.current) return;
+
+      const containerHeight = containerRef.current.clientHeight;
+      const imageHeight = imageRef.current.clientHeight;
+
+      const distance = imageHeight - containerHeight;
+
+      setScrollDistance(distance > 0 ? distance : 0);
+    };
+
+    calculateScroll();
+
+    window.addEventListener("resize", calculateScroll);
+
+    return () => {
+      window.removeEventListener("resize", calculateScroll);
+    };
+  }, [isLoaded]);
+
+  return (
+    <div
+      ref={containerRef}
+      className="relative h-[420px] overflow-hidden bg-muted/30"
+    >
+      {/* Website Screenshot */}
+      <motion.img
+        ref={imageRef}
+        src={src}
+        alt={alt}
+        onLoad={() => setIsLoaded(true)}
+        draggable={false}
+        initial={{ y: 0 }}
+        whileHover={
+          scrollDistance > 0
+            ? {
+              y: -scrollDistance,
+            }
+            : {}
+        }
+        transition={{
+          duration: Math.max(4, scrollDistance / 500),
+          ease: "easeInOut",
+        }}
+        className="absolute top-0 left-0 w-full h-auto min-h-full object-cover object-top"
+      />
+
+      {/* Bottom gradient */}
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-linear-to-t from-black/30 to-transparent" />
+
+      {/* Preview indicator */}
+      <div className="absolute bottom-3 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+        <div className="flex items-center gap-2 rounded-full bg-black/70 px-3 py-1.5 text-xs text-white backdrop-blur-md">
+          <span className="h-1.5 w-1.5 rounded-full bg-white animate-pulse" />
+          Scroll Preview
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export function Projects() {
   const { t } = useTranslation();
@@ -30,26 +107,20 @@ export function Projects() {
                 transition={{ duration: 0.3 }}
                 className="group relative rounded-2xl overflow-hidden bg-card/50 backdrop-blur-sm border border-border/50 hover:border-violet-500/30 transition-all duration-300 h-full"
               >
-                {/* Project Image/Emoji Area */}
-                <div
-                  className={`relative h-48 bg-gradient-to-br ${project.color} flex items-center justify-center overflow-hidden`}
-                >
-                  <motion.span
-                    className="text-7xl opacity-80 group-hover:scale-125 transition-transform duration-500"
-                    whileHover={{ rotate: [0, -10, 10, 0] }}
-                  >
-                    {project.image}
-                  </motion.span>
-                  {/* Decorative elements */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-card/80 to-transparent" />
+                {/* Website Screenshot Preview */}
+                <div className="relative overflow-hidden">
+                  <WebsitePreview
+                    src={project.image}
+                    alt={`${project.title} website preview`}
+                  />
 
-                  {/* Hover overlay */}
+                  {/* Hover Overlay */}
                   <motion.div
-                    className="absolute inset-0 bg-violet-500/10 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                    className="absolute inset-0 bg-violet-500/10 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
                   >
                     <Button
                       size="sm"
-                      className="rounded-full gap-2 shadow-lg"
+                      className="rounded-full gap-2 shadow-lg pointer-events-auto"
                       asChild
                     >
                       <a
@@ -69,6 +140,7 @@ export function Projects() {
                   <h3 className="text-xl font-semibold mb-2 group-hover:text-violet-500 transition-colors">
                     {project.title}
                   </h3>
+
                   <p className="text-sm text-muted-foreground leading-relaxed mb-4">
                     {project.description}
                   </p>

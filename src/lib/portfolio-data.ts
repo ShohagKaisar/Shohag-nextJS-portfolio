@@ -83,12 +83,12 @@ export const techStack = {
 
 export const projects = [
   {
-    title: "Movie Portal",
+    title: "ZAHRA Jewelry Website",
     description:
-      "A dynamic movie browsing portal with search functionality, detailed movie information, and responsive design. Built with modern web technologies for optimal performance and user experience.",
-    tags: ["React", "API", "CSS", "Responsive"],
-    image: "🎬",
-    liveUrl: "https://mshohagdev-movie-portal.netlify.app/",
+      "A dynamic movie browsing portal with search functionality, detailed movie information, and responsive design. Built with modern web technologies for optimal performance ZAHRA Jewelry is a premium, modern e-commerce website designed for a luxury jewelry brand. The website focuses on creating an elegant and trustworthy shopping experience while showcasing jewelry collections with high-quality visuals, refined typography, and a clean luxury aesthetic. user experience.",
+    tags: ["React", "Next.js", "API", "TailwindCSS", "Responsive"],
+    image: "/jewelry.png",
+    liveUrl: "https://jewelry-website-alpha.vercel.app/",
     color: "from-violet-500/20 to-purple-500/20",
   },
   {
